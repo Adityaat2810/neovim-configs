@@ -54,6 +54,7 @@ return {
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     { "mason-org/mason.nvim", opts = {} },
+    "hrsh7th/cmp-nvim-lsp",
     {
       "mason-org/mason-lspconfig.nvim",
       opts = {
@@ -63,6 +64,13 @@ return {
     },
   },
   config = function()
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    local has_cmp_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+
+    if has_cmp_lsp then
+      capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+    end
+
     local lsp_attach_group = vim.api.nvim_create_augroup("user-lsp-attach", { clear = true })
 
     vim.api.nvim_create_autocmd("LspAttach", {
@@ -82,7 +90,7 @@ return {
         map("n", "gi", vim.lsp.buf.implementation, "LSP: go to implementation")
         map("n", "K", vim.lsp.buf.hover, "LSP: hover")
         map("n", "<leader>rn", vim.lsp.buf.rename, "LSP: rename symbol")
-        map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "LSP: code action")
+        map({ "n", "v" }, "<leader>cA", vim.lsp.buf.code_action, "LSP: builtin code action")
         map("n", "<leader>lf", function()
           vim.lsp.buf.format({ async = true })
         end, "LSP: format buffer")
@@ -104,6 +112,12 @@ return {
     vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Diagnostics: open float" })
 
     for server_name, server_config in pairs(servers) do
+      server_config.capabilities = vim.tbl_deep_extend(
+        "force",
+        {},
+        capabilities,
+        server_config.capabilities or {}
+      )
       vim.lsp.config(server_name, server_config)
     end
   end,

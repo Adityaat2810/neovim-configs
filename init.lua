@@ -23,5 +23,7 @@ require("lazy").setup({
   require("plugins.telescope"),
   require("plugins.treesitter"),
   require("plugins.lsp"),
+  require("plugins.code-actions"),
+  require("plugins.completion"),
   require("plugins.lualine"),
 })
