@@ -1,10 +1,16 @@
-vim.cmd("set expandtab")
-vim.cmd("set tabstop=2")
-vim.cmd("set softtabstop=2")
-vim.cmd("set shiftwidth=2")
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
-vim.env.PATH = vim.fn.expand("~/.cargo/bin") .. ":" .. vim.env.PATH
+vim.opt.expandtab = true
+vim.opt.tabstop = 2
+vim.opt.softtabstop = 2
+vim.opt.shiftwidth = 2
+
+local cargo_bin = vim.fn.expand("~/.cargo/bin")
+if not vim.env.PATH:find(cargo_bin, 1, true) then
+  vim.env.PATH = cargo_bin .. ":" .. vim.env.PATH
+end
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -12,18 +18,18 @@ if not vim.loop.fs_stat(lazypath) then
     "clone",
     "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
+    "--branch=stable",
     lazypath,
   })
 end
 vim.opt.rtp:prepend(lazypath)
-require("lazy").setup("plugins")
-vim.keymap.set('n', '<leader>n', ':Neotree filesystem reveal left<CR>', {})
 
-if not vim.g.lazy_did_setup then
-  require("lazy").setup(plugins, opts)
-  vim.g.lazy_did_setup = true
-end
+local plugins = require("plugins")
+table.insert(plugins, require("plugins.catppuccin"))
+table.insert(plugins, require("plugins.treesetter"))
 
-require("catppuccin").setup()
-vim.cmd.colorscheme "catppuccin"
+require("lazy").setup(plugins)
+
+vim.keymap.set("n", "<leader>n", "<cmd>Neotree filesystem reveal left<cr>", {
+  desc = "Reveal current file in Neo-tree",
+})

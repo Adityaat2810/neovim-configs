@@ -1,39 +1,5 @@
-return {
-  {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    priority = 999
-  },
-  {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    config = function()
-      require("nvim-treesitter").setup({
-        ensure_installed = {
-          "lua",
-          "javascript",
-          "typescript",
-          "python",
-          "go",
-          "cpp",
-          "rust",
-          "bash",
-          "json",
-          "yaml",
-          "markdown",
-        },
-
-        highlight = {
-          enable = true,
-        },
-
-        indent = {
-          enable = true,
-        },
-      })
-    end,
-  },
-  {
+return { 
+    {
     'nvim-telescope/telescope.nvim', version = 'v-1.2.2',
     cmd = 'Telescope',
     keys = {
