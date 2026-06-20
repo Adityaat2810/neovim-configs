@@ -19,6 +19,7 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   require("plugins.catppuccin"),
+  require("plugins.lazygit"),
   require("plugins.neo-tree"),
   require("plugins.telescope"),
   require("plugins.treesitter"),
